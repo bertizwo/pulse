@@ -11,19 +11,16 @@ services:
     ports:
       - "7655:7655"
     volumes:
-      - data:/data
-      - certs:/certs
+      - /opt/pulse/data:/data
+      - /opt/pulse/certs:/certs
     environment:
       # First-boot Admin
       PULSE_AUTH_USER: admin             # Username for web UI login
-      PULSE_AUTH_PASS: pulseKennwort     # Plain text or bcrypt hash (auto-hashed if plain)
+      PULSE_AUTH_PASS: < change Me >     # Password
       
       # - API_TOKENS=token-a,token-b        # Comma-separated tokens (plain or SHA3-256 hashed)
       #API_TOKEN: xxxxxxxxxxxx hier reinkopieren vom Proxmox xxxxxxxxxxxxxxxxx
       
-      # HTTPS_ENABLED=true
-      # TLS_CERT_FILE=/certs/cert.pem
-      # TLS_KEY_FILE=/certs/key.pem
-volumes:
-  data:
-  certs:
+      HTTPS_ENABLED=true
+      TLS_CERT_FILE=/certs/cert.pem
+      TLS_KEY_FILE=/certs/key.pem
