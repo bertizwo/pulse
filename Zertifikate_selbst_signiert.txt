@@ -1,0 +1,64 @@
+----------------------------------------------------
+selbst signierte Zertifikate mit eigener CA
+nur für lokales Netz und im lab vorgesehen
+----------------------------------------------------
+
+
+su -
+apt update && apt upgrade && install openssl -y
+openssl version
+mkdir /certs/proxmox
+cd /certs/proxmox
+
+# 1. CA private Key
+openssl genrsa -aes256 -out ca-key.pem 4096
+-PW merken
+
+# 2. CA Certificate
+openssl req -new -x509 -sha256 -days 3650 -key ca-key.pem -out ca.pem
+cat ca.pem      -> hier den Inhalt vom Zertifikat markieren und kopieren
+	- Auf dem Desktop vom Zielsystem:  editor öffnen und reinkopieren, als ca.pem abspeichern
+
+# 3. Self Signet Certificate Private key
+openssl genrsa -out cert-key.pem 4096
+
+# 4. Signing Certificate Request
+openssl req -new -sha256 -subj "/CN=proxmox" -key cert-key.pem -out cert.csr
+
+
+
+# 5. extfile with all alternative names
+echo "subjectAltName=DNS:pulse.utm.loc,IP:192.168.69.108" >> extfile.cnf
+
+# 6. Self Signed Certificate
+openssl x509 -req -sha256 -days 3650 -in cert.csr -CA ca.pem -CAkey ca-key.pem -out cert.pem -extfile extfile.cnf -CAcreateserial
+
+#7. Full Chaine
+cat cert.pem >> full-chain.pem
+cat ca.pem >> full-chain.pem
+
+# 8. pulse (docker) - pve shell
+cat cert-key.pem    - ->   nano /opt/pulse/certs/key.pem   
+cat full-chain.pem  - ->   nano /opt/pulse/certs/cert.pem  
+
+
+# 9. Auf dem jeweiligem Desktop - in vertrauenswürdige Zertifikate
+Linux-Desktop
+root@ubuntu22:/home/daniel# cp ca.pem /usr/local/share/ca-certificates
+root@ubuntu22:/home/daniel# update-ca-certificates
+
+Windows-Desktop
+cmd:      mmc
+zertifikate / lokale Computer
+vertrauenswürdige Stammzertifikate 
+-> Aktion / upload.       -> ca.pem
+
+MAC-Desktop
+cat ca.pem      
+	- MAC:  terminal öffnen
+	cd Desktop
+	nano ca.crt
+	- -> reinkopieren
+	
+	- MAC Desktop:    doppelklick auf ca.crt
+	- trusted root certificate
