@@ -19,7 +19,7 @@ services:
       PULSE_AUTH_PASS: < change Me >     # Password
       
       # - API_TOKENS=token-a,token-b        # Comma-separated tokens (plain or SHA3-256 hashed)
-      #API_TOKEN: xxxxxxxxxxxx hier reinkopieren vom Proxmox xxxxxxxxxxxxxxxxx
+      #API_TOKEN: xxxxxxxxxxxx hier reinkopieren vom Proxmox xxxxxxxxxxxxxxxx
       
       HTTPS_ENABLED=true
       TLS_CERT_FILE=/certs/cert.pem
