@@ -3,7 +3,7 @@ apt install docker.io docker-compose curl -y
 systemctl enable docker --now 
 
 mkdir /opt/pulse
-mkdir /opt/pulse{data,certs}
+mkdir /opt/pulse/{data,certs}
 chown 100000:100000 /opt/pulse
 cd /opt/pulse 
 nano docker-compose.yml  
